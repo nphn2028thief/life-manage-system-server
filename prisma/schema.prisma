@@ -1,0 +1,139 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  SAVINGS
+}
+
+enum ExcercisesCategory {
+  GYM
+  CARDIO
+}
+
+model Users {
+  id           String         @id @default(uuid())
+  username     String         @unique
+  email        String         @unique
+  password     String
+  firstName    String
+  lastName     String
+  dateOfBirth  DateTime
+  weight       Float
+  height       Float
+  schedules    Schedules[]
+  transactions Transactions[]
+  workouts     Workouts[]
+  meals        Meals[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Schedules {
+  id          String   @id @default(uuid())
+  title       String
+  startTime   DateTime
+  endTime     DateTime
+  description String
+  user        Users    @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Transactions {
+  id          String          @id @default(uuid())
+  date        DateTime
+  amount      Int
+  type        TransactionType
+  description String
+  user        Users           @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime        @default(now())
+}
+
+model Workouts {
+  id             String                 @id @default(uuid())
+  name           String
+  description    String?
+  startTime      DateTime
+  endTime        DateTime
+  caloriesBurned Float
+  user           Users                  @relation(fields: [userId], references: [id])
+  userId         String
+  excercises     ExcercisesOnWorkouts[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+}
+
+model Excercises {
+  id                   String                 @id @default(uuid())
+  name                 String
+  category             ExcercisesCategory
+  description          String?
+  caloriesBurnedPerRep Float
+  workouts             ExcercisesOnWorkouts[]
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+}
+
+model ExcercisesOnWorkouts {
+  workout    Workouts   @relation(fields: [workoutId], references: [id])
+  workoutId  String
+  exercise   Excercises @relation(fields: [exerciseId], references: [id])
+  exerciseId String
+  sets       Int
+  reps       Int
+  weight     Float
+  createdAt  DateTime   @default(now())
+
+  @@id([workoutId, exerciseId])
+}
+
+model Meals {
+  id        String         @id @default(uuid())
+  name      String
+  date      DateTime
+  time      DateTime
+  user      Users          @relation(fields: [userId], references: [id])
+  userId    String
+  foods     FoodsOnMeals[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model Foods {
+  id        String         @id @default(uuid())
+  name      String
+  calories  Float
+  protein   Float
+  carbs     Float
+  fat       Float
+  meals     FoodsOnMeals[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model FoodsOnMeals {
+  meal      Meals    @relation(fields: [mealId], references: [id])
+  mealId    String
+  food      Foods    @relation(fields: [foodId], references: [id])
+  foodId    String
+  quantity  Int
+  createdAt DateTime @default(now())
+
+  @@id([mealId, foodId])
+}
