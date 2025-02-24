@@ -91,7 +91,7 @@ model Excercises {
 }
 
 model ExcercisesOnWorkouts {
-  workout    Workouts   @relation(fields: [workoutId], references: [id])
+  workout    Workouts   @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   workoutId  String
   exercise   Excercises @relation(fields: [exerciseId], references: [id])
   exerciseId String
@@ -128,7 +128,7 @@ model Foods {
 }
 
 model FoodsOnMeals {
-  meal      Meals    @relation(fields: [mealId], references: [id])
+  meal      Meals    @relation(fields: [mealId], references: [id], onDelete: Cascade)
   mealId    String
   food      Foods    @relation(fields: [foodId], references: [id])
   foodId    String
