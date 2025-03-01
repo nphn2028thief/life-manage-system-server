@@ -13,7 +13,7 @@ import { Workouts } from '@prisma/client';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateWorkoutDto } from './dto';
 import { WorkoutsService } from './workouts.service';
-import { IResponse } from 'src/common/types/response';
+import { IResponse, IUniqueId } from 'src/common/types/response';
 
 @Controller('workouts')
 export class WorkoutsController {
@@ -27,9 +27,7 @@ export class WorkoutsController {
 
   @UseGuards(AuthGuard)
   @Get(':id')
-  getWorkoutById(
-    @Req() req: Request,
-  ): Promise<IResponse | Omit<Workouts, 'userId'>> {
+  getWorkoutById(@Req() req: Request): Promise<Omit<Workouts, 'userId'>> {
     return this.workoutService.getWorkoutByIdAsync(req);
   }
 
@@ -38,13 +36,13 @@ export class WorkoutsController {
   createWorkout(
     @Req() req: Request,
     @Body() createWorkoutDto: CreateWorkoutDto,
-  ): Promise<IResponse> {
+  ): Promise<IResponse & { workout: Workouts }> {
     return this.workoutService.createWorkoutAsync(req, createWorkoutDto);
   }
 
   @UseGuards(AuthGuard)
   @Delete(':id')
-  deleteWorkoutById(@Req() req: Request) {
+  deleteWorkoutById(@Req() req: Request): Promise<IResponse & IUniqueId> {
     return this.workoutService.deleteWorkoutByIdAsync(req);
   }
 }

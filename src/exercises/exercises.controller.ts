@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -14,7 +15,7 @@ import { Excercises } from '@prisma/client';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateExerciseDto, UpdateExerciseDto } from './dto/exercise.dto';
 import { ExercisesService } from './exercises.service';
-import { IResponse } from 'src/common/types/response';
+import { IResponse, IUniqueId } from 'src/common/types/response';
 
 @Controller('exercises')
 export class ExercisesController {
@@ -33,7 +34,7 @@ export class ExercisesController {
   @Post('/system')
   createExerciseBySystem(
     @Req() req: Request,
-    createExerciseDto: CreateExerciseDto,
+    @Body() createExerciseDto: CreateExerciseDto,
   ): Promise<IResponse & { exercise: Excercises }> {
     return this.exerciseService.createExerciseAsync(req, createExerciseDto);
   }
@@ -42,7 +43,7 @@ export class ExercisesController {
   @Post()
   createExerciseByUser(
     @Req() req: Request,
-    createExerciseDto: CreateExerciseDto,
+    @Body() createExerciseDto: CreateExerciseDto,
   ): Promise<IResponse & { exercise: Excercises }> {
     return this.exerciseService.createExerciseAsync(req, createExerciseDto);
   }
@@ -51,14 +52,14 @@ export class ExercisesController {
   @Patch(':id')
   updateExerciseById(
     @Req() req: Request,
-    updateExerciseDto: UpdateExerciseDto,
-  ): Promise<IResponse> {
+    @Body() updateExerciseDto: UpdateExerciseDto,
+  ): Promise<IResponse & { exercise: Excercises }> {
     return this.exerciseService.updateExerciseByIdAsync(req, updateExerciseDto);
   }
 
   @UseGuards(AuthGuard)
   @Delete(':id')
-  deleteExerciseById(@Req() req: Request): Promise<IResponse> {
+  deleteExerciseById(@Req() req: Request): Promise<IResponse & IUniqueId> {
     return this.exerciseService.deleteExerciseByIdAsync(req);
   }
 }
