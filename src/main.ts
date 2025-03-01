@@ -3,9 +3,12 @@ import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
+import { AllExceptionFilter } from './common/filters/all-exceptions.filter';
+import { WinstonLoggerService } from './winston/winston.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = app.get(WinstonLoggerService);
   app.enableCors({
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
@@ -29,6 +32,7 @@ async function bootstrap() {
       },
     }),
   );
+  app.useGlobalFilters(new AllExceptionFilter(logger));
   app.setGlobalPrefix('api');
   await app.listen(process.env.PORT ?? 3000);
 }

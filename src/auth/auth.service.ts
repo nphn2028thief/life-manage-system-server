@@ -3,9 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import * as argon from 'argon2';
 
-import { MessageType } from 'src/constants/response';
+import { MessageType } from 'src/common/constants/response';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { IResponse } from 'src/types/response';
+import { IResponse } from 'src/common/types/response';
 import { SignInDto, SignUpDto } from './dto';
 
 @Injectable()

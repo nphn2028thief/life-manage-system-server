@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
@@ -8,6 +8,9 @@ import { UsersModule } from './users/users.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { WorkoutsModule } from './workouts/workouts.module';
+import { ExercisesModule } from './exercises/exercises.module';
+import { WinstonLoggerService } from './winston/winston.service';
+import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -18,8 +21,14 @@ import { WorkoutsModule } from './workouts/workouts.module';
     UsersModule,
     PrismaModule,
     WorkoutsModule,
+    ExercisesModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, WinstonLoggerService, PrismaService],
+  exports: [WinstonLoggerService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
