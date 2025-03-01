@@ -10,14 +10,18 @@ import { Request } from 'express';
 import { CreateExerciseDto, UpdateExerciseDto } from './dto/exercise.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MessageType } from 'src/common/constants/response';
-import { IResponse } from 'src/common/types/response';
+import { IResponse, IUniqueId } from 'src/common/types/response';
 
 @Injectable()
 export class ExercisesService {
   constructor(private prismaService: PrismaService) {}
 
   async getExercisesAsync(): Promise<Excercises[]> {
-    return await this.prismaService.excercises.findMany();
+    return await this.prismaService.excercises.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 
   async getExerciseByIdAsync(id: string): Promise<Excercises> {
@@ -44,8 +48,8 @@ export class ExercisesService {
       const newExercise = await this.prismaService.excercises.create({
         data: {
           ...createExerciseDto,
-          addedBy: user ? 'USER' : 'SYSTEM',
-          userId: user ? (user as { id: string }).id : null,
+          addedBy: user ? ExcercisesAddedBy.USER : ExcercisesAddedBy.SYSTEM,
+          userId: user && 'id' in user ? (user as IUniqueId).id : null,
         },
       });
       return {
@@ -56,7 +60,9 @@ export class ExercisesService {
     } catch (error) {
       // Duplicate value
       if (error.code === 'P2002') {
-        throw new ConflictException(`Exercise ${name} has existed`);
+        throw new ConflictException(
+          `Exercise '${createExerciseDto.name}' has existed`,
+        );
       }
       throw error;
     }
@@ -65,9 +71,9 @@ export class ExercisesService {
   async updateExerciseByIdAsync(
     req: Request,
     updateExerciseDto: UpdateExerciseDto,
-  ): Promise<IResponse> {
+  ): Promise<IResponse & { exercise: Excercises }> {
     const { id } = req.params;
-    const { id: userId } = req.user as { id: string };
+    const { id: userId } = req.user as IUniqueId;
 
     try {
       const exercise = await this.prismaService.excercises.findUnique({
@@ -89,7 +95,7 @@ export class ExercisesService {
         );
       }
 
-      await this.prismaService.excercises.update({
+      const updatedExercise = await this.prismaService.excercises.update({
         where: {
           id,
         },
@@ -102,6 +108,7 @@ export class ExercisesService {
       return {
         messageType: MessageType.SUCCESS,
         message: 'Updated exercise successfully',
+        exercise: updatedExercise,
       };
     } catch (error) {
       // Duplicate value
@@ -112,9 +119,9 @@ export class ExercisesService {
     }
   }
 
-  async deleteExerciseByIdAsync(req: Request): Promise<IResponse> {
+  async deleteExerciseByIdAsync(req: Request): Promise<IResponse & IUniqueId> {
     const { id } = req.params;
-    const { id: userId } = req.user as { id: string };
+    const { id: userId } = req.user as IUniqueId;
 
     const exercise = await this.prismaService.excercises.findUnique({
       where: {
@@ -144,6 +151,7 @@ export class ExercisesService {
     return {
       messageType: MessageType.SUCCESS,
       message: 'Deleted exercise successfully',
+      id,
     };
   }
 }
