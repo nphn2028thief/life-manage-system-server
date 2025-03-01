@@ -9,8 +9,8 @@ import { Workouts } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateWorkoutDto } from './dto';
-import { MessageType } from 'src/constants/response';
-import { IResponse } from 'src/types/response';
+import { MessageType } from 'src/common/constants/response';
+import { IResponse } from 'src/common/types/response';
 
 @Injectable()
 export class WorkoutsService {

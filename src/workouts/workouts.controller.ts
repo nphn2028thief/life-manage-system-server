@@ -13,7 +13,7 @@ import { Workouts } from '@prisma/client';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateWorkoutDto } from './dto';
 import { WorkoutsService } from './workouts.service';
-import { IResponse } from 'src/types/response';
+import { IResponse } from 'src/common/types/response';
 
 @Controller('workouts')
 export class WorkoutsController {
