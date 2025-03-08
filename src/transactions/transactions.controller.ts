@@ -11,10 +11,10 @@ import {
 import { Request } from 'express';
 import { Transactions } from '@prisma/client';
 
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto, TransactionSummaryDto } from './dto';
-import { IResponse, IUniqueId } from 'src/common/types/response';
+import { IResponse, IUniqueId } from '../common/types/response';
 
 @Controller('transactions')
 @UseGuards(AuthGuard)

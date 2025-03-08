@@ -12,10 +12,10 @@ import {
 import { Request } from 'express';
 import { Excercises } from '@prisma/client';
 
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { CreateExerciseDto, UpdateExerciseDto } from './dto/exercise.dto';
 import { ExercisesService } from './exercises.service';
-import { IResponse, IUniqueId } from 'src/common/types/response';
+import { IResponse, IUniqueId } from '../common/types/response';
 
 @Controller('exercises')
 export class ExercisesController {

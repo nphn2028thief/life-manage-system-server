@@ -1,4 +1,4 @@
-import { MessageType } from 'src/common/constants/response';
+import { MessageType } from '../../common/constants/response';
 
 export interface IResponse {
   messageType: MessageType;
