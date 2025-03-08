@@ -9,7 +9,7 @@ export class WinstonLoggerService implements LoggerService {
   constructor() {
     const transports: winston.transport[] = [new winston.transports.Console()];
 
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       transports.push(
         new DailyRotateFile({
           filename: 'logs/application-%DATE%.log',
