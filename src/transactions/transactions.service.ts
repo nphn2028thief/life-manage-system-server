@@ -3,9 +3,9 @@ import { Request } from 'express';
 import { Transactions } from '@prisma/client';
 
 import { CreateTransactionDto, TransactionSummaryDto } from './dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { MessageType } from 'src/common/constants/response';
-import { IResponse, IUniqueId } from 'src/common/types/response';
+import { PrismaService } from '../prisma/prisma.service';
+import { MessageType } from '../common/constants/response';
+import { IResponse, IUniqueId } from '../common/types/response';
 
 @Injectable()
 export class TransactionsService {

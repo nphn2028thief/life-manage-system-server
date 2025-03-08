@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
 import { Workouts } from '@prisma/client';
 
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateWorkoutDto } from './dto';
-import { MessageType } from 'src/common/constants/response';
-import { IResponse, IUniqueId } from 'src/common/types/response';
+import { MessageType } from '../common/constants/response';
+import { IResponse, IUniqueId } from '../common/types/response';
 
 @Injectable()
 export class WorkoutsService {

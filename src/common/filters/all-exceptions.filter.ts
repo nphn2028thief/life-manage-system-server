@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { MessageType } from '../constants/response';
-import { WinstonLoggerService } from 'src/winston/winston.service';
+import { WinstonLoggerService } from '../../winston/winston.service';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
