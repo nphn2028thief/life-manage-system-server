@@ -7,6 +7,17 @@ export class WinstonLoggerService implements LoggerService {
   private logger: winston.Logger;
 
   constructor() {
+    const transports: winston.transport[] = [new winston.transports.Console()];
+
+    if (process.env.NODE_ENV === 'production') {
+      transports.push(
+        new DailyRotateFile({
+          filename: 'logs/application-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+        }),
+      );
+    }
+
     this.logger = winston.createLogger({
       level: 'info',
       format: winston.format.combine(
@@ -15,13 +26,7 @@ export class WinstonLoggerService implements LoggerService {
           return `${timestamp} [${level.toUpperCase()}] ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ''}`;
         }),
       ),
-      transports: [
-        new winston.transports.Console(),
-        new DailyRotateFile({
-          filename: 'logs/application-%DATE%.log',
-          datePattern: 'YYYY-MM-DD',
-        }),
-      ],
+      transports,
     });
   }
 
