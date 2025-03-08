@@ -68,6 +68,10 @@ model Transactions {
   user        Users           @relation(fields: [userId], references: [id])
   userId      String
   createdAt   DateTime        @default(now())
+
+  @@index([date])
+  @@index([type])
+  @@index([userId])
 }
 
 model Workouts {

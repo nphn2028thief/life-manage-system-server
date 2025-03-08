@@ -11,6 +11,7 @@ import { WorkoutsModule } from './workouts/workouts.module';
 import { ExercisesModule } from './exercises/exercises.module';
 import { WinstonLoggerService } from './winston/winston.service';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
     PrismaModule,
     WorkoutsModule,
     ExercisesModule,
+    TransactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService, WinstonLoggerService, PrismaService],
