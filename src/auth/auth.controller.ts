@@ -1,17 +1,8 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 
-import { SignInDto, SignUpDto } from './dto';
-import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { SignInDto, SignUpDto } from './dto';
 import { IResponse } from '../common/types/response';
 
 @Controller('auth')
@@ -29,11 +20,5 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<IResponse> {
     return this.authService.signIn(signInDto, res);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('getMe')
-  getMe(@Req() req: Request) {
-    return this.authService.getMe(req);
   }
 }

@@ -2,17 +2,23 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
 import { Transactions } from '@prisma/client';
 
-import { CreateTransactionDto, TransactionSummaryDto } from './dto';
+import { WinstonLoggerService } from 'src/winston/winston.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateTransactionDto, TransactionSummaryDto } from './dto';
 import { MessageType } from '../common/constants/response';
 import { IResponse, IUniqueId } from '../common/types/response';
 
 @Injectable()
 export class TransactionsService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private loggerService: WinstonLoggerService,
+    private prismaService: PrismaService,
+  ) {}
 
   async getMonthlySummaryAsync(req: Request): Promise<TransactionSummaryDto[]> {
     const { id: userId } = req.user as IUniqueId;
+
+    this.loggerService.log('Querying to get monthly summary transactions...');
 
     const summaryTransactions = await this.prismaService.$queryRaw<
       TransactionSummaryDto[]
@@ -44,6 +50,9 @@ export class TransactionsService {
     req: Request,
   ): Promise<Omit<Transactions, 'userId'>[]> {
     const { id: userId } = req.user as IUniqueId;
+
+    this.loggerService.log('Fetching all transactions...');
+
     return await this.prismaService.transactions.findMany({
       where: {
         userId,
@@ -60,6 +69,8 @@ export class TransactionsService {
   async getTransactionByIdAsync(
     id: string,
   ): Promise<Omit<Transactions, 'userId'>> {
+    this.loggerService.log(`Fetching transaction by ID: ${id} ...`);
+
     const existedTransaction = await this.prismaService.transactions.findUnique(
       {
         where: {
@@ -71,8 +82,11 @@ export class TransactionsService {
       },
     );
 
+    this.loggerService.log(`Fetched transaction by ID: ${id} ...`);
+
     if (!existedTransaction) {
-      throw new NotFoundException('Cannot found transaction');
+      this.loggerService.error(`Cannot find this transaction: ${id}`);
+      throw new NotFoundException('Cannot find this transaction');
     }
 
     return existedTransaction;
@@ -83,6 +97,9 @@ export class TransactionsService {
     createTransactionDto: CreateTransactionDto,
   ): Promise<IResponse & { transaction: Omit<Transactions, 'userId'> }> {
     const { id: userId } = req.user as IUniqueId;
+
+    this.loggerService.log('Creating transaction...');
+
     const newTransaction = await this.prismaService.transactions.create({
       data: {
         ...createTransactionDto,
@@ -98,15 +115,22 @@ export class TransactionsService {
   }
 
   async deleteTransactionAsync(id: string): Promise<IResponse & IUniqueId> {
+    this.loggerService.log(`Fetching transaction by ID: ${id} ...`);
+
     const transaction = await this.prismaService.transactions.findUnique({
       where: {
         id,
       },
     });
 
+    this.loggerService.log(`Fetched transaction by ID: ${id}`);
+
     if (!transaction) {
-      throw new NotFoundException('Cannot found transaction');
+      this.loggerService.error(`Cannot find this transaction: ${id}`);
+      throw new NotFoundException('Cannot find this transaction');
     }
+
+    this.loggerService.log(`Deleting transaction by ID: ${id} ...`);
 
     await this.prismaService.transactions.delete({
       where: {
