@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ExcercisesAddedBy, Foods } from '@prisma/client';
+import { AddedBy, Foods } from '@prisma/client';
 import { Request } from 'express';
 
 import FoodDto from './dto/food.dto';
@@ -43,7 +43,7 @@ export class FoodsService {
 
     if (!food) {
       this.loggerService.error(`Cannot find this food: ${id}`);
-      throw new NotFoundException('Cannot find food');
+      throw new NotFoundException('Cannot find this food');
     }
 
     return food;
@@ -61,7 +61,7 @@ export class FoodsService {
       const newFood = await this.prismaService.foods.create({
         data: {
           ...createFoodDto,
-          addedBy: user ? ExcercisesAddedBy.USER : ExcercisesAddedBy.SYSTEM,
+          addedBy: user ? AddedBy.USER : AddedBy.SYSTEM,
           userId: user && 'id' in user ? (user as IUniqueId).id : null,
         },
       });
@@ -102,10 +102,10 @@ export class FoodsService {
 
       if (!food) {
         this.loggerService.error(`Cannot find this food: ${id}`);
-        throw new NotFoundException('Cannot find food');
+        throw new NotFoundException('Cannot find this food');
       }
 
-      if (food.addedBy !== ExcercisesAddedBy.USER || food.userId !== userId) {
+      if (food.addedBy !== AddedBy.USER || food.userId !== userId) {
         this.loggerService.error(
           `You are not allowed to adjust this food: ${id}`,
         );
@@ -165,10 +165,10 @@ export class FoodsService {
 
     if (!food) {
       this.loggerService.error(`Cannot find this food: ${id}`);
-      throw new NotFoundException('Cannot find food');
+      throw new NotFoundException('Cannot find this food');
     }
 
-    if (food.addedBy !== ExcercisesAddedBy.USER || food.userId !== userId) {
+    if (food.addedBy !== AddedBy.USER || food.userId !== userId) {
       this.loggerService.error(
         `You are not allowed to delete this food: ${id}`,
       );

@@ -30,7 +30,6 @@ export class UpdateMealDto {
 
   @IsOptional()
   @IsDateString({}, { message: 'Meal date is invalid' })
-  @IsNotEmpty({ message: 'Meal date cannot be empty' })
   date?: Date;
 
   @IsOptional()

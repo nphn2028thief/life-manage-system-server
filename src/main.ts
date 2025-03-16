@@ -30,6 +30,7 @@ async function bootstrap() {
           });
         }
       },
+      transform: true,
     }),
   );
   app.useGlobalFilters(new AllExceptionFilter(logger));
