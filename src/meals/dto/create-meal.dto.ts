@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
   IsArray,
   IsDateString,
   IsNotEmpty,
@@ -12,7 +13,7 @@ import {
 
 import { IsTimeString } from 'src/common/validators/is-time-string';
 
-class Food {
+class FoodDto {
   @IsString({ message: 'Food id must be a string' })
   @IsNotEmpty({ message: 'Food id cannot be empty' })
   id: string;
@@ -37,10 +38,11 @@ export class CreateMealDto {
   @IsNotEmpty({ message: 'Meal time cannot be empty' })
   time: string;
 
+  @ArrayNotEmpty({ message: 'Foods must be at least 1' })
   @IsArray({ message: 'Foods must be an array' })
-  @ValidateNested({ each: true })
-  @Type(() => Food)
-  foods: Food[];
+  @ValidateNested()
+  @Type(() => FoodDto)
+  foods: FoodDto[];
 }
 
 export default CreateMealDto;

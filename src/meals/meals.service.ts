@@ -46,7 +46,7 @@ export class MealsService {
     return allMeals.map((meal) => ({
       ...meal,
       foods: meal.foods.map((item) => ({
-        portion: item.quantity,
+        portion: item.portion,
         ...item.food,
       })),
     }));
@@ -87,7 +87,7 @@ export class MealsService {
     return {
       ...existedMeal,
       foods: existedMeal.foods.map((item) => ({
-        portion: item.quantity,
+        portion: item.portion,
         ...item.food,
       })),
     };
@@ -137,7 +137,7 @@ export class MealsService {
           userId,
           foods: {
             create: foods.map((item) => ({
-              quantity: item.portion,
+              portion: item.portion,
               food: {
                 connect: {
                   id: item.id,
@@ -173,7 +173,7 @@ export class MealsService {
       meal: {
         ...newMeal,
         foods: newMeal.foods.map((item) => ({
-          portion: item.quantity,
+          portion: item.portion,
           ...item.food,
         })),
       },
@@ -252,7 +252,7 @@ export class MealsService {
           // Create new food connections
           updateData.foods = {
             create: foods.map((item) => ({
-              quantity: item.portion,
+              portion: item.portion,
               food: { connect: { id: item.id } },
             })),
           };
@@ -295,7 +295,7 @@ export class MealsService {
       meal: {
         ...updatedMeal,
         foods: updatedMeal.foods.map((item) => ({
-          portion: item.quantity,
+          portion: item.portion,
           ...item.food,
         })),
       },

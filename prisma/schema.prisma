@@ -19,12 +19,12 @@ enum TransactionType {
   SAVINGS
 }
 
-enum ExcercisesCategory {
+enum ExercisesCategory {
   GYM
   CARDIO
 }
 
-enum ExcercisesAddedBy {
+enum AddedBy {
   SYSTEM
   USER
 }
@@ -75,41 +75,39 @@ model Transactions {
 }
 
 model Workouts {
-  id             String                 @id @default(uuid())
-  name           String
-  description    String?
-  startTime      DateTime
-  endTime        DateTime
-  caloriesBurned Float
-  user           Users                  @relation(fields: [userId], references: [id])
-  userId         String
-  excercises     ExcercisesOnWorkouts[]
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime               @updatedAt
+  id          String                @id @default(uuid())
+  name        String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  user        Users                 @relation(fields: [userId], references: [id])
+  userId      String
+  exercises   ExercisesOnWorkouts[]
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
 }
 
-model Excercises {
-  id                   String                 @id @default(uuid())
-  name                 String                 @unique
-  category             ExcercisesCategory
-  description          String?
-  caloriesBurnedPerRep Float
-  addedBy              ExcercisesAddedBy
-  userId               String?
-  workouts             ExcercisesOnWorkouts[]
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @updatedAt
+model Exercises {
+  id          String                @id @default(uuid())
+  name        String                @unique
+  category    ExercisesCategory
+  description String?
+  addedBy     AddedBy
+  userId      String?
+  workouts    ExercisesOnWorkouts[]
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
 }
 
-model ExcercisesOnWorkouts {
-  workout    Workouts   @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+model ExercisesOnWorkouts {
+  workout    Workouts  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   workoutId  String
-  exercise   Excercises @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exercise   Exercises @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   exerciseId String
   sets       Int
   reps       Int
   weight     Float
-  createdAt  DateTime   @default(now())
+  createdAt  DateTime  @default(now())
 
   @@id([workoutId, exerciseId])
 }
@@ -127,17 +125,17 @@ model Meals {
 }
 
 model Foods {
-  id        String            @id @default(uuid())
-  name      String            @unique
+  id        String         @id @default(uuid())
+  name      String         @unique
   calories  Float
   protein   Float
   carbs     Float
   fat       Float
-  addedBy   ExcercisesAddedBy
+  addedBy   AddedBy
   userId    String?
   meals     FoodsOnMeals[]
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model FoodsOnMeals {
@@ -145,7 +143,7 @@ model FoodsOnMeals {
   mealId    String
   food      Foods    @relation(fields: [foodId], references: [id], onDelete: Cascade)
   foodId    String
-  quantity  Int
+  portion   Int
   createdAt DateTime @default(now())
 
   @@id([mealId, foodId])

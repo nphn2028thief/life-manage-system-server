@@ -4,9 +4,11 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { WorkoutsController } from './workouts.controller';
 import { WorkoutsService } from './workouts.service';
+import { LoggerModule } from 'src/logger/logger.module';
 
 @Module({
   imports: [
+    LoggerModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -19,7 +21,8 @@ import { WorkoutsService } from './workouts.service';
       }),
     }),
   ],
-  providers: [WorkoutsService],
   controllers: [WorkoutsController],
+  providers: [WorkoutsService],
+  exports: [WorkoutsService],
 })
 export class WorkoutsModule {}

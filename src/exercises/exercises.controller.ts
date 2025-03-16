@@ -10,10 +10,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { Excercises } from '@prisma/client';
+import { Exercises } from '@prisma/client';
 
 import { AuthGuard } from '../auth/auth.guard';
-import { CreateExerciseDto, UpdateExerciseDto } from './dto/exercise.dto';
+import { CreateExerciseDto, UpdateExerciseDto } from './dto';
 import { ExercisesService } from './exercises.service';
 import { IResponse, IUniqueId } from '../common/types/response';
 
@@ -22,12 +22,12 @@ export class ExercisesController {
   constructor(private exerciseService: ExercisesService) {}
 
   @Get()
-  getExercises(): Promise<Excercises[]> {
+  getExercises(): Promise<Exercises[]> {
     return this.exerciseService.getExercisesAsync();
   }
 
   @Get(':id')
-  getExerciseById(@Param('id') id: string): Promise<Excercises> {
+  getExerciseById(@Param('id') id: string): Promise<Exercises> {
     return this.exerciseService.getExerciseByIdAsync(id);
   }
 
@@ -35,7 +35,7 @@ export class ExercisesController {
   createExerciseBySystem(
     @Req() req: Request,
     @Body() createExerciseDto: CreateExerciseDto,
-  ): Promise<IResponse & { exercise: Excercises }> {
+  ): Promise<IResponse & { exercise: Exercises }> {
     return this.exerciseService.createExerciseAsync(req, createExerciseDto);
   }
 
@@ -44,7 +44,7 @@ export class ExercisesController {
   createExerciseByUser(
     @Req() req: Request,
     @Body() createExerciseDto: CreateExerciseDto,
-  ): Promise<IResponse & { exercise: Excercises }> {
+  ): Promise<IResponse & { exercise: Exercises }> {
     return this.exerciseService.createExerciseAsync(req, createExerciseDto);
   }
 
@@ -53,7 +53,7 @@ export class ExercisesController {
   updateExerciseById(
     @Req() req: Request,
     @Body() updateExerciseDto: UpdateExerciseDto,
-  ): Promise<IResponse & { exercise: Excercises }> {
+  ): Promise<IResponse & { exercise: Exercises }> {
     return this.exerciseService.updateExerciseByIdAsync(req, updateExerciseDto);
   }
 
